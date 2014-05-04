@@ -1,6 +1,8 @@
 var Promise = require("es6-promise").Promise;
 var https = require("https");
 
+var database = require("../database");
+
 /**
  * Book Object
  * A way to load and save books.
@@ -19,19 +21,16 @@ module.exports.Book = function(isbn){
     var loadPromise;
     this.load = function(){
         loadPromise = loadPromise || new Promise(function(resolve, reject){
-            https.get(google_api_url+isbn,
-                function(res){
-                    var current_data = "";
-                    res.on("data", function(chunk){
-                        current_data += chunk;
-                    });
-                    res.on("end", function(){
-                        resolve(JSON.parse(current_data));
-                    });
-                }
-            ).on("error", function(e){
-                reject(e);
-            });
+            database.getCollection("books").then(function(collection){
+                collection.findOne({"isbn":isbn},function(err,result){
+                    if(err){
+                        reject(err);
+                        return;
+                    }
+
+                    resolve(result);
+                });
+            },reject);
         });
         return loadPromise;
     };
