@@ -13,8 +13,7 @@ var database = require("../database");
 //Need to add the isbn after the url to load a book.
 var google_api_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:";
 
-module.exports.Book = function(isbn){
-    var data = null;
+module.exports.Book = function(isbn,data){
     //A shorthand to avoid scope confusion.
     var that = this;
     //To avoid loading the same thing twice. Let's do a singleton.
@@ -27,7 +26,7 @@ module.exports.Book = function(isbn){
                         reject(err);
                         return;
                     }
-
+                    data = result;
                     resolve(result);
                 });
             },reject);
@@ -45,4 +44,26 @@ module.exports.Book = function(isbn){
             return null;
         });
     }
+};
+
+module.exports.getBookList = function(){
+    console.log("booklist");
+    return new Promise(function(resolve, reject){
+        console.log("booklist");
+        database.getCollection("books").then(function(collection){
+            collection.find().toArray(function(err, results){
+                console.log("booklist");
+                if(err){
+                    reject(err);
+                    return;
+                }
+
+                var i, books = [];
+                for(i=0; i < results.length; i++){
+                    books.push(new module.exports.Book(results[i].isbn, results[i]));
+                }
+                resolve(books);
+            });
+        });
+    });
 };

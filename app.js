@@ -1,17 +1,36 @@
 var express = require("express");
 var app = express();
+var Promise = require("es6-promise").Promise;
+var book = require("./models/book");
+var Book = book.Book;
 
-var Book = require("./models/book").Book;
-var book = new Book("9782818924624");
+app.get("/", function(req, res){
+    console.log("test");
+    book.getBookList().then(function(books){
+        var arr = [];
 
-app.get("/", function(req,res){
+        books.reduce(function(promise, result){
+            return promise
+                .then(function(){
+                    console.log("GET DATA");
+                    return result.getData();
+                })
+                .then(function(book_data){
+                    console.log(book_data);
+                    arr.push(book_data);
+                });
+        },Promise.resolve()).then(function(){
+            res.send(arr);
+        });
 
+    }, res.send);
+});
+
+app.get("/book/:isbn", function(req,res){
+    var book = new Book(req.params.isbn);
     book.load().then(function(data){
         res.send(data);
-    }, function(err){
-        console.log("Something has gone wrong");
-        res.send(err);
-    });
+    }, res.send);
 });
 
 app.listen(8080);
