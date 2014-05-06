@@ -4,15 +4,40 @@ var Promise = require("es6-promise").Promise;
 var book = require("./models/book");
 var Book = book.Book;
 
+var template = require("./template");
+
+var mainTemplate = template.loadTemplate("basic");
+var booksTemplate = template.loadTemplate("books");
+
 app.get("/", function(req, res){
-    console.log("test");
+    var response_send = function(data){
+        //Here is the template.
+        //But for now we will just use res.send;
+        var body = "";
+        booksTemplate.then(function(tmpl){
+            body = tmpl({
+                books: data
+            });
+        }).then(function(){return mainTemplate;}).then(function(tmpl){
+                res.send(tmpl({
+                    body: body
+                }));
+            }
+        );
+    };
+
+    if(req.xhr){
+        response_send = function(){
+            res.send.call(res,arguments);
+        };
+    }
+
     book.getBookList().then(function(books){
         var arr = [];
 
         books.reduce(function(promise, result){
             return promise
                 .then(function(){
-                    console.log("GET DATA");
                     return result.getData();
                 })
                 .then(function(book_data){
@@ -20,10 +45,10 @@ app.get("/", function(req, res){
                     arr.push(book_data);
                 });
         },Promise.resolve()).then(function(){
-            res.send(arr);
+            response_send(arr);
         });
 
-    }, res.send);
+    }, response_send);
 });
 
 app.get("/book/:isbn", function(req,res){

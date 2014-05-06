@@ -4,6 +4,7 @@
     "dependencies": {
         "express": "4.*",
         "es6-promise": "*",
-        "mongodb": "*"
+        "mongodb": "*",
+        "yui": "3.*"
     }
 }
