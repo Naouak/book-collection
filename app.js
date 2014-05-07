@@ -44,6 +44,15 @@ app.get("/", function(req, res){
     }, response_send);
 });
 
+var bookAddTpl = template.loadTemplate("book_form");
+//Basic page for book addition.
+app.get("/book/", function(req,res){
+    var page = new Page("basic");
+    bookAddTpl.then(function(tmpl){
+        page.setContent("body",tmpl()).render(res);
+    });
+});
+
 app.get("/book/:isbn", function(req,res){
     var book = new Book(req.params.isbn);
     book.load().then(function(data){
