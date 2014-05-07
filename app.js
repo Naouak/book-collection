@@ -9,21 +9,26 @@ var template = require("./template");
 var mainTemplate = template.loadTemplate("basic");
 var booksTemplate = template.loadTemplate("books");
 
+var displayPage = function(res, data){
+      return mainTemplate.then(function(tmpl){
+            return tmpl(data);
+      }).then(function(html){
+          res.send(html);
+      });
+};
+
 app.get("/", function(req, res){
     var response_send = function(data){
         //Here is the template.
         //But for now we will just use res.send;
-        var body = "";
+        var page_data = {
+            body: ""
+        };
         booksTemplate.then(function(tmpl){
-            body = tmpl({
+            page_data.body = tmpl({
                 books: data
             });
-        }).then(function(){return mainTemplate;}).then(function(tmpl){
-                res.send(tmpl({
-                    body: body
-                }));
-            }
-        );
+        }).then(function(){ return displayPage(res,page_data); });
     };
 
     if(req.xhr){
