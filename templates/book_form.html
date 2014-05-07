@@ -1,9 +1,15 @@
 <form action="/book/" method="post">
     <fieldset>
         <legend>Ajouter un livre</legend>
+        <div class="input_field">
+            <label for="book_isbn">ISBN/EAN13 :</label>
+            <input type="text" name="isbn" id="book_isbn" placeholder="0000000000000" required pattern="\d{13}"/>
+        </div>
 
-        <label for="book_isbn">ISBN/EAN13 :</label>
-        <input type="text" name="isbn" id="book_isbn" placeholder="0000000000000" required pattern="\d{13}"/>
+        <div class="input_field">
+            <label for="book_title">Titre :</label>
+            <input type="text" name="title" id="book_title"/>
+        </div>
 
         <button>Ajouter</button>
 

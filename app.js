@@ -44,9 +44,9 @@ app.get("/", function(req, res){
     }, response_send);
 });
 
-var bookAddTpl = template.loadTemplate("book_form");
 //Basic page for book addition.
 app.get("/book/", function(req,res){
+    var bookAddTpl = template.loadTemplate("book_form");
     var page = new Page("basic");
     bookAddTpl.then(function(tmpl){
         page.setContent("body",tmpl()).render(res);
