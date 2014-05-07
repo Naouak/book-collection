@@ -5,30 +5,18 @@ var book = require("./models/book");
 var Book = book.Book;
 
 var template = require("./template");
-
-var mainTemplate = template.loadTemplate("basic");
+var Page = require("./page").Page;
 var booksTemplate = template.loadTemplate("books");
 
-var displayPage = function(res, data){
-      return mainTemplate.then(function(tmpl){
-            return tmpl(data);
-      }).then(function(html){
-          res.send(html);
-      });
-};
+var page = new Page("basic");
 
 app.get("/", function(req, res){
     var response_send = function(data){
-        //Here is the template.
-        //But for now we will just use res.send;
-        var page_data = {
-            body: ""
-        };
         booksTemplate.then(function(tmpl){
-            page_data.body = tmpl({
-                books: data
-            });
-        }).then(function(){ return displayPage(res,page_data); });
+            page.setContent("body",tmpl({
+                    books: data
+            })).render(res);
+        });
     };
 
     if(req.xhr){
