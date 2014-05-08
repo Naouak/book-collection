@@ -61,7 +61,13 @@ app.post("/book/", bodyParser, function(req,res){
     book_data.title = req.param("title");
     book_data.volume = req.param("volume");
 
-    res.send(book_data);
+    Book.post(book_data).then(function(){
+        res.redirect("/");
+    }, function(err){
+        console.log(err);
+        res.send(500);
+    });
+
 });
 
 app.get("/book/:isbn", function(req,res){
