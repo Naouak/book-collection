@@ -5,6 +5,7 @@
         "express": "4.*",
         "es6-promise": "*",
         "mongodb": "*",
-        "yui": "3.*"
+        "yui": "3.*",
+        "body-parser": "*"
     }
 }

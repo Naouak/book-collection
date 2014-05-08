@@ -8,6 +8,8 @@ var template = require("./template");
 var Page = require("./page").Page;
 var booksTemplate = template.loadTemplate("books");
 
+var bodyParser = require('body-parser')();
+
 var page = new Page("basic");
 
 app.get("/", function(req, res){
@@ -51,6 +53,15 @@ app.get("/book/", function(req,res){
     bookAddTpl.then(function(tmpl){
         page.setContent("body",tmpl()).render(res);
     });
+});
+
+app.post("/book/", bodyParser, function(req,res){
+    var book_data = {};
+    book_data.isbn = req.param("isbn");
+    book_data.title = req.param("title");
+    book_data.volume = req.param("volume");
+
+    res.send(book_data);
 });
 
 app.get("/book/:isbn", function(req,res){
