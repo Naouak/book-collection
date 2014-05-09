@@ -46,6 +46,15 @@ var Book = module.exports.Book = function(isbn,data){
     }
 };
 
+Book.get = function(isbn){
+    return new Book(isbn).load();
+};
+
+Book.put = function(isbn,book_data){
+    //As we use an upsert to do posting, we can use it for put too.
+    return Book.post(book_data);
+};
+
 Book.post = function(book_data){
    return database.getCollection("books").then(function(collection){
         return new Promise(function(resolve, reject){
@@ -55,6 +64,16 @@ Book.post = function(book_data){
                 upsert: true,
                 multi: false
             }, function(err){
+                err?reject(err):resolve();
+            });
+        });
+    });
+};
+
+Book["delete"] = function(isbn){
+    return database.getCollection("books").then(function(collection){
+        return new Promise(function(resolve, reject){
+            collection.remove({"isbn": isbn}, function(err){
                 err?reject(err):resolve();
             });
         });
