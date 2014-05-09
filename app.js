@@ -10,9 +10,10 @@ var booksTemplate = template.loadTemplate("books");
 
 var bodyParser = require('body-parser')();
 
-var page = new Page("basic");
+app.use(express.static("static/"));
 
 app.get("/", function(req, res){
+    var page = new Page("basic");
     var response_send = function(data){
         booksTemplate.then(function(tmpl){
             page.setContent("body",tmpl({
