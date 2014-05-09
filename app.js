@@ -6,7 +6,6 @@ var Book = book.Book;
 
 var template = require("./template");
 var Page = require("./page").Page;
-var booksTemplate = template.loadTemplate("books");
 
 var bodyParser = require('body-parser')();
 
@@ -14,6 +13,8 @@ app.use(express.static("static/"));
 
 app.get("/", function(req, res){
     var page = new Page("basic");
+    var booksTemplate = template.loadTemplate("books");
+
     var response_send = function(data){
         booksTemplate.then(function(tmpl){
             page.setContent("body",tmpl({
