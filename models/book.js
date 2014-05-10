@@ -52,14 +52,14 @@ Book.get = function(isbn){
 
 Book.put = function(isbn,book_data){
     //As we use an upsert to do posting, we can use it for put too.
-    return Book.post(book_data);
+    return Book.post(book_data, isbn);
 };
 
-Book.post = function(book_data){
+Book.post = function(book_data, isbn){
    return database.getCollection("books").then(function(collection){
         return new Promise(function(resolve, reject){
             collection.update({
-                "isbn": book_data.isbn
+                "isbn": isbn?isbn:book_data.isbn
             }, book_data, {
                 upsert: true,
                 multi: false

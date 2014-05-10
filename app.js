@@ -71,7 +71,6 @@ app.post("/book/", bodyParser, function(req,res){
         console.log(err);
         res.send(500);
     });
-
 });
 
 app.get("/book/:isbn", function(req,res){
@@ -85,6 +84,15 @@ app.get("/book/:isbn", function(req,res){
             page.setContent("body",err).render(res);
         });
     }, res.send);
+});
+
+app.post("/book/:isbn", bodyParser, function(req,res){
+    var book_data = {};
+    book_data.isbn = req.param("isbn");
+    book_data.title = req.param("title");
+    book_data.volume = req.param("volume");
+
+    Book.put(req.params.isbn, book_data).then(res.redirect("/book/"+req.params.isbn));
 });
 
 app.listen(8080);
