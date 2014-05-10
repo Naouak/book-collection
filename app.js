@@ -92,7 +92,9 @@ app.post("/book/:isbn", bodyParser, function(req,res){
     book_data.title = req.param("title");
     book_data.volume = req.param("volume");
 
-    Book.put(req.params.isbn, book_data).then(res.redirect("/book/"+req.params.isbn));
+    Book.put(req.params.isbn, book_data).then(function(){
+        res.redirect("/book/"+req.params.isbn);
+    });
 });
 
 app.listen(8080);
