@@ -12,6 +12,10 @@ module.exports.loadTemplate = function(name){
         });
     }).then(function(data){
         //We got the template Data (Yayifications) !
-        return micro.compile(data);
+        try{
+            return micro.compile(data);
+        } catch(e){
+            return e;
+        }
     });
 };

@@ -54,6 +54,8 @@ app.get("/book/", function(req,res){
     var page = new Page("basic");
     bookAddTpl.then(function(tmpl){
         page.setContent("body",tmpl()).render(res);
+    }, function(err){
+        page.setContent("body",err).render(res);
     });
 });
 
@@ -73,9 +75,15 @@ app.post("/book/", bodyParser, function(req,res){
 });
 
 app.get("/book/:isbn", function(req,res){
+    var bookAddTpl = template.loadTemplate("book_form");
+    var page = new Page("basic");
     var book = new Book(req.params.isbn);
     book.load().then(function(data){
-        res.send(data);
+        bookAddTpl.then(function(tmpl){
+            page.setContent("body",tmpl(data)).render(res);
+        }, function(err){
+            page.setContent("body",err).render(res);
+        });
     }, res.send);
 });
 

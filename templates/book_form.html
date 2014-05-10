@@ -1,21 +1,21 @@
-<form action="/book/" method="post">
+<form action="/book/<%=data.isbn %>" method="<%=data.isbn?'put':'post' %>">
     <fieldset>
         <legend>Ajouter un livre</legend>
         <div class="input_field">
             <label for="book_isbn">ISBN/EAN13 :</label>
-            <input type="text" name="isbn" id="book_isbn" placeholder="0000000000000" required pattern="\d{13}"/>
+            <input type="text" name="isbn" id="book_isbn" placeholder="0000000000000" required pattern="\d{13}" value="<%=data.isbn %>" />
         </div>
 
         <div class="input_field">
             <label for="book_title">Titre :</label>
-            <input type="text" name="title" id="book_title"/>
+            <input type="text" name="title" id="book_title" value="<%=data.title %>"/>
         </div>
 
         <div class="input_field">
             <label for="book_volume">Numéro de volume :</label>
-            <input type="text" name="volume" id="book_volume" />
+            <input type="text" name="volume" id="book_volume" value="<%=data.volume %>" />
         </div>
 
-        <button>Ajouter</button>
+        <button><%=data.isbn?'Mettre à jour':'Ajouter' %></button>
     </fieldset>
 </form>
