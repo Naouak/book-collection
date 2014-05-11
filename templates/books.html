@@ -1,5 +1,8 @@
 <ul>
     <% for(var i = 0; i < this.books.length; i++){ %>
-        <li><a href="/book/<%=this.books[i].isbn%>"><%=this.books[i].isbn%> - <%=this.books[i].title %></a></li>
+        <li><a href="/book/<%=this.books[i].isbn%>">
+            <img src="/images/<%=this.books[i].isbn%>.png" alt="<%=this.books[i].title %>"/>
+            <span><%=this.books[i].isbn%> - <%=this.books[i].title %></span>
+        </a></li>
     <% } %>
 </ul>

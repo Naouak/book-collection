@@ -11,6 +11,11 @@ var bodyParser = require('body-parser')();
 var formidable = require("formidable");
 
 app.use(express.static("static/"));
+//If we have a 404 on a image, we load a placeholder.
+app.get("/images/*", function(req, res){
+    //we look into another directory to avoid infinite loop if placeholder is not there
+    res.redirect("/assets/notfound.png");
+});
 
 app.get("/", function(req, res){
     var page = new Page("basic");
