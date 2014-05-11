@@ -98,6 +98,7 @@ app.post("/book/:isbn", bodyParser, function(req,res){
     });
 });
 
+var fs = require("fs");
 app.post("/book/:isbn/image/", function(req,res,next){
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files){
@@ -110,7 +111,15 @@ app.post("/book/:isbn/image/", function(req,res,next){
         next();
     });
 }, function(req,res){
-    res.send(req.files);
+    var file = req.files.cover.path;
+    fs.rename(file,"static/images/"+req.params.isbn+".png", function(err){
+        if(err){
+            console.log(err);
+            res.send(500);
+            return;
+        }
+        res.redirect("/book/"+req.params.isbn);
+    });
 });
 
 app.listen(8080);
