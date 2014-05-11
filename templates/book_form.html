@@ -19,3 +19,10 @@
         <button><%=data.isbn?'Mettre à jour':'Ajouter' %></button>
     </fieldset>
 </form>
+
+<% if(data.isbn){ %>
+<form action="/book/<%=data.isbn%>/image/" method="post" enctype="multipart/form-data">
+    <input type="file" name="cover" id="cover"/>
+    <button>Uploader</button>
+</form>
+<% } %>

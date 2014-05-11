@@ -8,6 +8,7 @@ var template = require("./template");
 var Page = require("./page").Page;
 
 var bodyParser = require('body-parser')();
+var formidable = require("formidable");
 
 app.use(express.static("static/"));
 
@@ -95,6 +96,21 @@ app.post("/book/:isbn", bodyParser, function(req,res){
     Book.put(req.params.isbn, book_data).then(function(){
         res.redirect("/book/"+req.params.isbn);
     });
+});
+
+app.post("/book/:isbn/image/", function(req,res,next){
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        if(err){
+            next();
+            return;
+        }
+        req.body = fields;
+        req.files = files;
+        next();
+    });
+}, function(req,res){
+    res.send(req.files);
 });
 
 app.listen(8080);

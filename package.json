@@ -6,6 +6,7 @@
         "es6-promise": "*",
         "mongodb": "*",
         "yui": "3.*",
-        "body-parser": "*"
+        "body-parser": "*",
+        "formidable": ""
     }
 }
