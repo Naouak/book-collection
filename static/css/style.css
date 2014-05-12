@@ -37,3 +37,18 @@ footer .footer-text{
     max-width: 960px;
     margin: auto;
 }
+
+/* Book List */
+.book-list{
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.book{
+    display: inline-block;
+}
+
+.book .book-cover{
+    display: block;
+}
