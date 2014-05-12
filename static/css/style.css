@@ -1,0 +1,39 @@
+/* Global */
+a {
+    color: inherit;
+}
+
+/* Header */
+header{
+    color: white;
+    background: #130b0b;
+    padding: 5px;
+}
+
+header h1{
+    max-width: 960px;
+    margin: auto;
+}
+
+header h1 a{
+    color: inherit;
+    text-decoration: inherit;
+}
+
+/* Main content */
+.main-content{
+    max-width: 960px;
+    margin: auto;
+}
+
+/* Footer */
+footer{
+    color: white;
+    background: #130b0b;
+    padding: 5px;
+}
+
+footer .footer-text{
+    max-width: 960px;
+    margin: auto;
+}
