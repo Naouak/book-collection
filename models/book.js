@@ -101,3 +101,19 @@ module.exports.getBookList = function(){
         });
     });
 };
+
+/**
+ * Simple middleware to factorize fetching book_data from a query.
+ * @param req
+ * @param res
+ * @param next
+ */
+module.exports.dataMiddleware = function(req,res,next){
+    var book_data = {};
+    book_data.isbn = req.param("isbn");
+    book_data.title = req.param("title");
+    book_data.volume = req.param("volume");
+
+    req.book_data = book_data;
+    next();
+};

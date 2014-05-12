@@ -65,13 +65,8 @@ app.get("/book/", function(req,res){
     });
 });
 
-app.post("/book/", bodyParser, function(req,res){
-    var book_data = {};
-    book_data.isbn = req.param("isbn");
-    book_data.title = req.param("title");
-    book_data.volume = req.param("volume");
-
-    Book.post(book_data).then(function(){
+app.post("/book/", bodyParser, book.dataMiddleware, function(req,res){
+    Book.post(req.book_data).then(function(){
         res.redirect("/");
     }, function(err){
         console.log(err);
@@ -92,13 +87,8 @@ app.get("/book/:isbn", function(req,res){
     }, res.send);
 });
 
-app.post("/book/:isbn", bodyParser, function(req,res){
-    var book_data = {};
-    book_data.isbn = req.param("isbn");
-    book_data.title = req.param("title");
-    book_data.volume = req.param("volume");
-
-    Book.put(req.params.isbn, book_data).then(function(){
+app.post("/book/:isbn", bodyParser, book.dataMiddleware, function(req,res){
+    Book.put(req.params.isbn, req.book_data).then(function(){
         res.redirect("/book/"+req.params.isbn);
     });
 });
