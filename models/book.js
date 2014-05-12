@@ -1,5 +1,4 @@
 var Promise = require("es6-promise").Promise;
-var https = require("https");
 
 var database = require("../database");
 
@@ -11,7 +10,7 @@ var database = require("../database");
  */
 
 //Need to add the isbn after the url to load a book.
-var google_api_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:";
+//var google_api_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:";
 
 var Book = module.exports.Book = function(isbn,data){
     //A shorthand to avoid scope confusion.
