@@ -16,6 +16,17 @@
             <input type="text" name="volume" id="book_volume" value="<%=data.volume %>" />
         </div>
 
+        <div class="input_field">
+            <label for="book_status">Statut de lecture :</label>
+            <select name="status" id="book_status">
+                <option value="order" <%=data.status=="order"||data.status==undefined?"selected":"" %>>A commander</option>
+                <option value="queue" <%=data.status=="queue"?"selected":"" %>>En attente de lecture</option>
+                <option value="reading" <%=data.status=="reading"?"selected":"" %>>En cours de lecture</option>
+                <option value="read" <%=data.status=="read"?"selected":"" %>>Lu</option>
+                <option value="rereading" <%=data.status=="rereading"?"selected":"" %>>En cours de relecture</option>
+            </select>
+        </div>
+
         <button><%=data.isbn?'Mettre à jour':'Ajouter' %></button>
     </fieldset>
 </form>

@@ -1,6 +1,6 @@
 <ul class="book-list">
     <% for(var i = 0; i < this.books.length; i++){ %>
-        <li class="book"><a href="/book/<%=this.books[i].isbn%>">
+        <li class="book book-status-<%=this.books[i].status%>"><a href="/book/<%=this.books[i].isbn%>">
             <img src="/images/<%=this.books[i].isbn%>.png" alt="<%=this.books[i].title %>" class="book-cover"/>
             <span class="book-title"><%=this.books[i].isbn%> - <%=this.books[i].title %></span>
         </a></li>

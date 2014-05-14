@@ -112,6 +112,7 @@ module.exports.dataMiddleware = function(req,res,next){
     book_data.isbn = req.param("isbn");
     book_data.title = req.param("title");
     book_data.volume = req.param("volume");
+    book_data.status = req.param("status");
 
     req.book_data = book_data;
     next();
