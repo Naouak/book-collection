@@ -44,11 +44,24 @@ app.get("/", function(req, res){
                     return result.getData();
                 })
                 .then(function(book_data){
-                    console.log(book_data);
                     arr.push(book_data);
                 });
         },Promise.resolve()).then(function(){
-            response_send(arr);
+            //Here we will group books by reading state.
+            var book_by_state = {};
+            arr.forEach(function(item){
+                if(book_by_state[item.status] === undefined){
+                    book_by_state[item.status] = [];
+                }
+
+                book_by_state[item.status].push(item);
+            });
+
+            console.log(book_by_state);
+
+            return book_by_state;
+        }).then(function(book_by_state){
+            response_send(book_by_state);
         });
 
     }, response_send);

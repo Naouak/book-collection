@@ -1,8 +1,16 @@
-<ul class="book-list">
-    <% for(var i = 0; i < this.books.length; i++){ %>
-        <li class="book book-status-<%=this.books[i].status%>"><a href="/book/<%=this.books[i].isbn%>">
-            <img src="/images/<%=this.books[i].isbn%>.png" alt="<%=this.books[i].title %>" class="book-cover"/>
-            <span class="book-title"><%=this.books[i].isbn%> - <%=this.books[i].title %></span>
-        </a></li>
-    <% } %>
-</ul>
+<% for(var j in this.books){
+    if(this.books.hasOwnProperty(j)){
+    %>
+        <h2><%=j %></h2>
+        <ul class="book-list">
+            <% for(var i = 0; i < this.books[j].length; i++){ %>
+                <li class="book book-status-<%=this.books[j][i].status%>"><a href="/book/<%=this.books[j][i].isbn%>">
+                    <img src="/images/<%=this.books[j][i].isbn%>.png" alt="<%=this.books[j][i].title %>" class="book-cover"/>
+                    <span class="book-title"><%=this.books[j][i].isbn%> - <%=this.books[j][i].title %></span>
+                </a></li>
+            <% } %>
+        </ul>
+    <%
+    }
+}
+%>
