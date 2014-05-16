@@ -113,6 +113,7 @@ module.exports.dataMiddleware = function(req,res,next){
     book_data.title = req.param("title");
     book_data.volume = req.param("volume");
     book_data.status = req.param("status");
+    book_data.publisher = req.param("publisher");
 
     req.book_data = book_data;
     next();

@@ -17,6 +17,11 @@
         </div>
 
         <div class="input_field">
+            <label for="book_publisher">Éditeur</label>
+            <input type="text" name="publisher" id="book_publisher" value="<%=data.publisher %>"/>
+        </div>
+
+        <div class="input_field">
             <label for="book_status">Statut de lecture :</label>
             <select name="status" id="book_status">
                 <option value="order" <%=data.status=="order"||data.status==undefined?"selected":"" %>>A commander</option>

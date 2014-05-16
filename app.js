@@ -56,9 +56,6 @@ app.get("/", function(req, res){
 
                 book_by_state[item.status].push(item);
             });
-
-            console.log(book_by_state);
-
             return book_by_state;
         }).then(function(book_by_state){
             response_send(book_by_state);
