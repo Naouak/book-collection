@@ -37,3 +37,5 @@ var Publisher = module.exports.Publisher = function(name,data){
         });
     }
 };
+
+//@TODO : List publisher and their ISBN key.
