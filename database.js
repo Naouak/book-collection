@@ -21,3 +21,17 @@ module.exports.getCollection = function(name){
     });
 };
 
+module.exports.find = function(collection, find_params){
+    return new Promise(function(resolve, reject){
+        module.exports.getCollection(collection).then(function(collection){
+            collection.find(find_params).toArray(function(err, results){
+                if(err){
+                    reject(err);
+                    return;
+                }
+                resolve(results);
+            });
+        });
+    });
+}
+
