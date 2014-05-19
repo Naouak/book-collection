@@ -5,14 +5,28 @@ var Promise = require("es6-promise").Promise;
 
 var database = require("../database");
 
-var Publisher = module.exports.Publisher = function(name,data){
-    //A shorthand to avoid scope confusion.
-    var that = this;
+var publisherCollection = database.getCollection("publisher");
+
+var Publisher = module.exports.Publisher = function(_id,data){
+    var isNew = false;
+    if(_id == null){
+        isNew = true;
+    }
+
+    //No data given so we may initialize the data object
+    if(data == undefined){
+        data = {
+            _id: null,
+            name: null,
+            isbn:[]
+        };
+    }
+
     //To avoid loading the same thing twice. Let's do a singleton.
     var loadPromise;
     this.load = function(){
         loadPromise = loadPromise || new Promise(function(resolve, reject){
-            database.getCollection("publisher").then(function(collection){
+            publisherCollection.then(function(collection){
                 collection.findOne({"name":name},function(err,result){
                     if(err){
                         reject(err);
@@ -27,6 +41,8 @@ var Publisher = module.exports.Publisher = function(name,data){
     };
 
     this.getData = function(){
+        //A shorthand to avoid scope confusion.
+        var that = this;
         //A simple promise that will load the content if not already loaded.
         return new Promise(function(resolve, reject){
             if(data){
@@ -35,7 +51,49 @@ var Publisher = module.exports.Publisher = function(name,data){
             that.load().then(resolve(result), reject(err));
             return null;
         });
-    }
+    };
+
+    this.setName = function(name){
+        data.name = name;
+        return this;
+    };
+
+    this.addISBNKey = function(isbnKey){
+        data.isbn.push(isbnKey);
+        data.isbn = data.isbn.reduce(function(arr,item){ if(arr.indexOf(item) < 0){ arr.push(item); } },[]);
+        return this;
+    };
+
+    this.save = function(){
+        return new Promise(function(resolve, reject){
+            publisherCollection.then(function(collection){
+                collection.findAndModify({
+                    query: {_id: data._id},
+                    update: data,
+                    upsert: true,
+                    new: true
+                },
+                function(err, document){
+                    if(err){
+                        reject(err);
+                        return;
+                    }
+                    data = document;
+                    resolve();
+                });
+            });
+        });
+    };
+};
+
+Publisher.getList = function(){
+    return database.find("publishers").then(function(publishers){
+        var arr = [];
+        for(var i = 0; i < publishers.length; i++){
+            arr.push(new Publisher(publishers[i]._id, publishers[i]));
+        }
+        return arr;
+    });
 };
 
 //@TODO : List publisher and their ISBN key.
