@@ -96,4 +96,16 @@ Publisher.getList = function(){
     });
 };
 
-//@TODO : List publisher and their ISBN key.
+Publisher.getPublisherByISBNKey = function(isbnKey){
+    return publisherCollection.then(function(collection){
+        return new Promise(function(resolve, reject){
+            collection.find({isbn:isbnKey}, function(err,documents){
+                if(err){
+                    reject(err);
+                    return;
+                }
+                resolve(new Publisher(documents[0]._id,documents[0]));
+            });
+        });
+    });
+};
