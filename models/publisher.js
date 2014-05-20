@@ -60,27 +60,36 @@ var Publisher = module.exports.Publisher = function(_id,data){
 
     this.addISBNKey = function(isbnKey){
         data.isbn.push(isbnKey);
-        data.isbn = data.isbn.reduce(function(arr,item){ if(arr.indexOf(item) < 0){ arr.push(item); } },[]);
+        data.isbn = data.isbn.reduce(function(arr,item){ if(arr.indexOf(item) < 0){ arr.push(item); } return arr; },[]);
         return this;
     };
 
     this.save = function(){
+        var query = undefined;
+        if(data._id){
+            query = { _id: data._id };
+        }
+
         return new Promise(function(resolve, reject){
+            console.log(data);
             publisherCollection.then(function(collection){
-                collection.findAndModify({
-                    query: {_id: data._id},
-                    update: data,
-                    upsert: true,
-                    new: true
-                },
-                function(err, document){
-                    if(err){
-                        reject(err);
-                        return;
+                collection.findAndModify(
+                    query,
+                    null,
+                    data,
+                    {
+                        upsert: true,
+                        new: true
+                    },
+                    function(err, document){
+                        if(err){
+                            reject(err);
+                            return;
+                        }
+                        data = document;
+                        resolve();
                     }
-                    data = document;
-                    resolve();
-                });
+                );
             });
         });
     };
