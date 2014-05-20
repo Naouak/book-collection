@@ -3,7 +3,7 @@
 var Publisher = require("./models/publisher").Publisher;
 
 var publisher = new Publisher();
-publisher.addISBNKey(1892).setName("Doki Doki").save().then(function(){
+publisher.addISBNKey("1892").setName("Doki Doki").save().then(function(){
     console.log("great success!");
 }, function(err){
     console.log("too bad man");

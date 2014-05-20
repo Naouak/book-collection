@@ -108,11 +108,18 @@ Publisher.getList = function(){
 Publisher.getPublisherByISBNKey = function(isbnKey){
     return publisherCollection.then(function(collection){
         return new Promise(function(resolve, reject){
-            collection.find({isbn:isbnKey}, function(err,documents){
+            collection.find({isbn:isbnKey}).toArray(function(err,documents){
                 if(err){
                     reject(err);
                     return;
                 }
+                if(documents.length==0){
+                    reject(404);
+                    return;
+                }
+
+
+
                 resolve(new Publisher(documents[0]._id,documents[0]));
             });
         });

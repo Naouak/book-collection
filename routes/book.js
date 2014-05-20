@@ -3,6 +3,8 @@ var Page = require("./../page").Page;
 var book = require("../models/book");
 var Book = book.Book;
 var template = require("./../template");
+var bodyParser = require("body-parser");
+var formidable = require("formidable");
 
 module.exports = function(router){
     //Basic page for book addition.

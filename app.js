@@ -61,7 +61,7 @@ app.get("/", function(req, res){
 });
 
 //Addings routes for books.
-book(app);
+require("./routes/book")(app);
 require("./routes/publisher")(app);
 
 app.listen(8080);
