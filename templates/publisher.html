@@ -1,0 +1,7 @@
+<h1><%=data.name %></h1>
+<div>Clés ISBN éditeur :</div>
+<ul>
+    <% if(data.isbn){ for(var i = 0; i < data.isbn.length; i++){ %>
+        <li><%=data.isbn[i] %></li>
+    <% }} %>
+</ul>
