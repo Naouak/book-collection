@@ -1,9 +1,10 @@
-<% for(var j in this.publishers){
-    if(this.publishers.hasOwnProperty(j)){
+<% for(var j in data){
+    if(data.hasOwnProperty(j)){
+        var pub = data[j].getData(true);
         %>
         <ul class="publisher-list">
-            <li class="publisher"><a href="/publisher/<%=this.publishers[j]._id%>">
-                <span class="publisher-name"><%=this.publishers[j].name%></span>
+            <li class="publisher"><a href="/publisher/<%=pub._id%>">
+                <span class="publisher-name"><%=pub.name%></span>
             </a></li>
         </ul>
         <%

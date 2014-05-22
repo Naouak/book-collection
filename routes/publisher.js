@@ -7,9 +7,16 @@ var Page = require("./../page").Page;
 
 module.exports = function(router){
     router.get("/publishers/", function(req, res){
-        database.find("publishers").then(function(publishers){
-            //@todo render templates with publisher list.
-        });
+        var tpl = template.loadTemplate("publishers");
+        var page = new Page("basic");
+        Publisher.getList()
+            .then(function(list){
+                return tpl.then(function(tmpl){ return tmpl(list); });
+            })
+            .then(function(body){
+                page.setContent("body", body).render(res);
+            });
+
     });
 
     router.get("/publisher/isbn/:isbn", function(req,res){

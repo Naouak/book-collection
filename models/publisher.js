@@ -40,7 +40,10 @@ var Publisher = module.exports.Publisher = function(_id,data){
         return loadPromise;
     };
 
-    this.getData = function(){
+    this.getData = function(fromCache){
+        if(fromCache){
+            return data;
+        }
         //A shorthand to avoid scope confusion.
         var that = this;
         //A simple promise that will load the content if not already loaded.
@@ -96,7 +99,7 @@ var Publisher = module.exports.Publisher = function(_id,data){
 };
 
 Publisher.getList = function(){
-    return database.find("publishers").then(function(publishers){
+    return database.find("publisher").then(function(publishers){
         var arr = [];
         for(var i = 0; i < publishers.length; i++){
             arr.push(new Publisher(publishers[i]._id, publishers[i]));
