@@ -2,6 +2,7 @@ var Promise = require("es6-promise").Promise;
 var database = require("./../database");
 var Publisher = require("./../models/publisher").Publisher;
 
+var bodyParser = require("body-parser");
 var template = require("./../template");
 var Page = require("./../page").Page;
 
@@ -38,6 +39,18 @@ module.exports = function(router){
             return tpl.then(function(tmpl){return tmpl(data);});
         }).then(function(content){
             page.setContent("body",content).render(res);
+        });
+    });
+
+    router.post("/publisher/",bodyParser, function(req,res){
+        var publisher = new Publisher();
+        publisher.setName(req.param("publisher_name"));
+        var isbn = req.param("publisher_isbn").split(",");
+        isbn.forEach(function(item){
+            publisher.addISBNKey(item.trim());
+        });
+        publisher.save().then(function(){
+            res.redirect("/publishers/");
         });
     });
 
