@@ -19,6 +19,16 @@ module.exports = function(router){
 
     });
 
+    router.get("/publisher/", function(req,res){
+        var tpl = template.loadTemplate("publisher_form");
+        var page = new Page("basic");
+        tpl.then(function(tmpl){
+            return tmpl();
+        }).then(function(body){
+                page.setContent("body", body).render(res);
+        });
+    });
+
     router.get("/publisher/isbn/:isbn", function(req,res){
         var tpl = template.loadTemplate("publisher");
         var page = new Page("basic");
@@ -30,4 +40,6 @@ module.exports = function(router){
             page.setContent("body",content).render(res);
         });
     });
+
+
 };
