@@ -16,7 +16,6 @@ var Publisher = module.exports.Publisher = function(_id,data){
     //No data given so we may initialize the data object
     if(data == undefined){
         data = {
-            _id: undefined,
             name: null,
             isbn:[]
         };
