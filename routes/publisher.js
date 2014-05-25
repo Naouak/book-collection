@@ -3,6 +3,7 @@ var database = require("./../database");
 var Publisher = require("./../models/publisher").Publisher;
 
 var bodyParser = require("body-parser");
+var formidable = require("formidable");
 var template = require("./../template");
 var Page = require("./../page").Page;
 
@@ -30,6 +31,30 @@ module.exports = function(router){
         });
     });
 
+    router.post("/publisher/",function(req,res,next){
+        var form = new formidable.IncomingForm();
+        form.parse(req, function(err, fields, files){
+            if(err){
+                next();
+                return;
+            }
+            req.body = fields;
+            req.files = files;
+            next();
+        });
+    }, function(req,res){
+        var publisher = new Publisher();
+        publisher.setName(req.param("publisher_name"));
+        var isbn = req.param("publisher_isbn").split(",");
+        isbn.forEach(function(item){
+            publisher.addISBNKey(item.trim());
+        });
+
+        publisher.save().then(function(){
+            res.redirect("/publishers/");
+        });
+    });
+
     router.get("/publisher/isbn/:isbn", function(req,res){
         var tpl = template.loadTemplate("publisher");
         var page = new Page("basic");
@@ -42,17 +67,7 @@ module.exports = function(router){
         });
     });
 
-    router.post("/publisher/",bodyParser, function(req,res){
-        var publisher = new Publisher();
-        publisher.setName(req.param("publisher_name"));
-        var isbn = req.param("publisher_isbn").split(",");
-        isbn.forEach(function(item){
-            publisher.addISBNKey(item.trim());
-        });
-        publisher.save().then(function(){
-            res.redirect("/publishers/");
-        });
-    });
+
 
 
 };
