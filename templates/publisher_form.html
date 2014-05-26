@@ -4,12 +4,12 @@
 
         <label for="publisher_name">
             Nom :
-            <input type="text" id="publisher_name" name="publisher_name" placeholder="éditeur"/>
+            <input type="text" id="publisher_name" name="publisher_name" placeholder="éditeur" value="<%=data.name %>"/>
         </label>
 
         <label for="publisher_isbn">
             Clés ISBN (séparées par des virgules) :
-            <input type="text" name="publisher_isbn" id="publisher_isbn"/>
+            <input type="text" name="publisher_isbn" id="publisher_isbn" value="<%=data.isbn?data.isbn.join(','):'' %>" />
         </label>
 
         <button>Enregistrer</button>

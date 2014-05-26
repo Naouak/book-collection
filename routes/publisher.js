@@ -30,7 +30,6 @@ module.exports = function(router){
                 page.setContent("body", body).render(res);
         });
     });
-
     router.post("/publisher/",function(req,res,next){
         var form = new formidable.IncomingForm();
         form.parse(req, function(err, fields, files){
@@ -52,6 +51,18 @@ module.exports = function(router){
 
         publisher.save().then(function(){
             res.redirect("/publishers/");
+        });
+    });
+    router.get("/publisher/:id", function(req, res){
+
+        var publisher = new Publisher(new database.ObjectID(req.params.id));
+        var tmpl = template.loadTemplate("publisher_form");
+        var page = new Page("basic");
+        publisher.getData().then(function(data){
+            console.log(data);
+            return tmpl.then(function(tpl){ return tpl(data); })
+        }).then(function(body){
+            page.setContent("body", body).render(res);
         });
     });
 

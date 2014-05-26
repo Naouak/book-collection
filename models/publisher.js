@@ -26,7 +26,7 @@ var Publisher = module.exports.Publisher = function(_id,data){
     this.load = function(){
         loadPromise = loadPromise || new Promise(function(resolve, reject){
             publisherCollection.then(function(collection){
-                collection.findOne({"name":name},function(err,result){
+                collection.findOne({"_id":_id},function(err,result){
                     if(err){
                         reject(err);
                         return;
@@ -47,10 +47,7 @@ var Publisher = module.exports.Publisher = function(_id,data){
         var that = this;
         //A simple promise that will load the content if not already loaded.
         return new Promise(function(resolve, reject){
-            if(data){
-                return resolve(data);
-            }
-            that.load().then(resolve(result), reject(err));
+            that.load().then(resolve, reject);
             return null;
         });
     };
@@ -119,8 +116,6 @@ Publisher.getPublisherByISBNKey = function(isbnKey){
                     reject(404);
                     return;
                 }
-
-
 
                 resolve(new Publisher(documents[0]._id,documents[0]));
             });

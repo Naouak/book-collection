@@ -35,3 +35,5 @@ module.exports.find = function(collection, find_params){
     });
 }
 
+module.exports.ObjectID = require("mongodb").ObjectID;
+
