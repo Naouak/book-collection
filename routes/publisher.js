@@ -66,6 +66,30 @@ module.exports = function(router){
         });
     });
 
+    router.post("/publisher/:id",function(req,res,next){
+        var form = new formidable.IncomingForm();
+        form.parse(req, function(err, fields, files){
+            if(err){
+                next();
+                return;
+            }
+            req.body = fields;
+            req.files = files;
+            next();
+        });
+    },  function(req,res){
+        var publisher = new Publisher(new database.ObjectID(req.params.id));
+        publisher.setName(req.param("publisher_name"));
+        var isbn = req.param("publisher_isbn").split(",");
+        isbn.forEach(function(item){
+            publisher.addISBNKey(item.trim());
+        });
+
+        publisher.save().then(function(){
+            res.redirect("/publishers/");
+        });
+    });
+
     router.get("/publisher/isbn/:isbn", function(req,res){
         var tpl = template.loadTemplate("publisher");
         var page = new Page("basic");
