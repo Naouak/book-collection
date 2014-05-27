@@ -8,11 +8,6 @@ var database = require("../database");
 var publisherCollection = database.getCollection("publisher");
 
 var Publisher = module.exports.Publisher = function(_id,data){
-    var isNew = false;
-    if(_id == null){
-        isNew = true;
-    }
-
     //No data given so we may initialize the data object
     if(data == undefined){
         data = {
@@ -65,12 +60,13 @@ var Publisher = module.exports.Publisher = function(_id,data){
 
     this.save = function(){
         var query = undefined;
-        if(data._id){
-            query = { _id: data._id };
+        if(_id){
+            query = { _id: _id };
+        } else {
+            query = { name: data.name }
         }
 
         return new Promise(function(resolve, reject){
-            console.log(data);
             publisherCollection.then(function(collection){
                 collection.findAndModify(
                     query,

@@ -30,29 +30,7 @@ module.exports = function(router){
                 page.setContent("body", body).render(res);
         });
     });
-    router.post("/publisher/",function(req,res,next){
-        var form = new formidable.IncomingForm();
-        form.parse(req, function(err, fields, files){
-            if(err){
-                next();
-                return;
-            }
-            req.body = fields;
-            req.files = files;
-            next();
-        });
-    }, function(req,res){
-        var publisher = new Publisher();
-        publisher.setName(req.param("publisher_name"));
-        var isbn = req.param("publisher_isbn").split(",");
-        isbn.forEach(function(item){
-            publisher.addISBNKey(item.trim());
-        });
 
-        publisher.save().then(function(){
-            res.redirect("/publishers/");
-        });
-    });
     router.get("/publisher/:id", function(req, res){
 
         var publisher = new Publisher(new database.ObjectID(req.params.id));
@@ -66,7 +44,7 @@ module.exports = function(router){
         });
     });
 
-    router.post("/publisher/:id",function(req,res,next){
+    router.post("/publisher/:id?",function(req,res,next){
         var form = new formidable.IncomingForm();
         form.parse(req, function(err, fields, files){
             if(err){
@@ -77,8 +55,13 @@ module.exports = function(router){
             req.files = files;
             next();
         });
-    },  function(req,res){
-        var publisher = new Publisher(new database.ObjectID(req.params.id));
+    }, function(req,res){
+        var publisher;
+        if(req.params.id){
+            publisher = new Publisher(new database.ObjectID(req.params.id));
+        } else {
+            publisher = new Publisher();
+        }
         publisher.setName(req.param("publisher_name"));
         var isbn = req.param("publisher_isbn").split(",");
         isbn.forEach(function(item){
