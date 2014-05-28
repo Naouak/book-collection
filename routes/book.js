@@ -14,9 +14,7 @@ module.exports = function(router){
         var sequence = Promise.resolve();
         if(req.params.isbn){
             var book = new Book(req.params.isbn);
-            sequence = sequence.then(function(){
-                return book.load();
-            });
+            sequence = book.load();
         }
         sequence.then(function(data){
             bookAddTpl.then(function(tmpl){
@@ -27,18 +25,28 @@ module.exports = function(router){
         }, res.send);
     });
 
-    router.post("/book/", bodyParser, book.dataMiddleware, function(req,res){
-        Book.post(req.book_data).then(function(){
-            res.redirect("/");
-        }, function(err){
-            console.log(err);
-            res.send(500);
+    router.post("/book/:isbn?", function(req,res,next){
+        var form = new formidable.IncomingForm();
+        form.parse(req, function(err, fields, files){
+            if(err){
+                next();
+                return;
+            }
+            req.body = fields;
+            req.files = files;
+            next();
         });
-    });
-
-    router.post("/book/:isbn", bodyParser, book.dataMiddleware, function(req,res){
-        Book.put(req.params.isbn, req.book_data).then(function(){
-            res.redirect("/book/"+req.params.isbn);
+    }, book.dataMiddleware, function(req,res){
+        var sequence;
+        if(req.params.isbn){
+            sequence = Book.put(req.params.isbn, req.book_data);
+        } else {
+            sequence = Book.post(req.book_data);
+        }
+        sequence.then(function(){
+            res.redirect("/book/"+req.book_data.isbn);
+        }).catch(function(err){
+            res.send(err);
         });
     });
 
