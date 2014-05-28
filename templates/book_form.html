@@ -38,6 +38,7 @@
 
 <% if(data.isbn){ %>
 <form action="/book/<%=data.isbn%>/image/" method="post" enctype="multipart/form-data">
+    <img src="/images/<%=data.isbn%>.png" alt="Visuel actuel"/>
     <input type="file" name="cover" id="cover"/>
     <button>Uploader</button>
 </form>
