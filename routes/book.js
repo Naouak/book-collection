@@ -7,15 +7,24 @@ var bodyParser = require("body-parser");
 var formidable = require("formidable");
 
 module.exports = function(router){
-    //Basic page for book addition.
-    router.get("/book/", function(req,res){
+    //Basic page for book addition/edition.
+    router.get("/book/:isbn?", function(req,res){
         var bookAddTpl = template.loadTemplate("book_form");
         var page = new Page("basic");
-        bookAddTpl.then(function(tmpl){
-            page.setContent("body",tmpl()).render(res);
-        }, function(err){
-            page.setContent("body",err).render(res);
-        });
+        var sequence = Promise.resolve();
+        if(req.params.isbn){
+            var book = new Book(req.params.isbn);
+            sequence = sequence.then(function(){
+                return book.load();
+            });
+        }
+        sequence.then(function(data){
+            bookAddTpl.then(function(tmpl){
+                page.setContent("body",tmpl(data)).render(res);
+            }, function(err){
+                page.setContent("body",err).render(res);
+            });
+        }, res.send);
     });
 
     router.post("/book/", bodyParser, book.dataMiddleware, function(req,res){
@@ -25,19 +34,6 @@ module.exports = function(router){
             console.log(err);
             res.send(500);
         });
-    });
-
-    router.get("/book/:isbn", function(req,res){
-        var bookAddTpl = template.loadTemplate("book_form");
-        var page = new Page("basic");
-        var book = new Book(req.params.isbn);
-        book.load().then(function(data){
-            bookAddTpl.then(function(tmpl){
-                page.setContent("body",tmpl(data)).render(res);
-            }, function(err){
-                page.setContent("body",err).render(res);
-            });
-        }, res.send);
     });
 
     router.post("/book/:isbn", bodyParser, book.dataMiddleware, function(req,res){
