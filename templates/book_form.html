@@ -18,7 +18,20 @@
 
         <div class="input_field">
             <label for="book_publisher">Éditeur</label>
-            <input type="text" name="publisher" id="book_publisher" value="<%=data.publisher %>"/>
+
+            <select name="publisher" id="book_publisher">
+                <%
+                data.publisherList.forEach(function(item){
+                %>
+                <option value="<%=item.getData(true)._id%>"
+                        <%=(data.publisher&&item.getData(true)._id.equals(data.publisher._id))?"selected":""%>
+                        >
+                    <%=item.getData(true).name %>
+                </option>
+                <%
+                });%>
+            </select>
+
         </div>
 
         <div class="input_field">
@@ -35,6 +48,8 @@
         <button><%=data.isbn?'Mettre à jour':'Ajouter' %></button>
     </fieldset>
 </form>
+
+
 
 <% if(data.isbn){ %>
 <form action="/book/<%=data.isbn%>/image/" method="post" enctype="multipart/form-data">

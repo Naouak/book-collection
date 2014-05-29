@@ -8,6 +8,9 @@ var database = require("../database");
 var publisherCollection = database.getCollection("publisher");
 
 var Publisher = module.exports.Publisher = function(_id,data){
+    if(_id && !(_id instanceof database.ObjectID)){
+        _id = new database.ObjectID(_id);
+    }
     //No data given so we may initialize the data object
     if(data == undefined){
         data = {

@@ -1,6 +1,7 @@
 var Promise = require("es6-promise").Promise;
 var Page = require("./../page").Page;
 var book = require("../models/book");
+var Publisher = require("../models/publisher").Publisher;
 var Book = book.Book;
 var template = require("./../template");
 var bodyParser = require("body-parser");
@@ -12,11 +13,25 @@ module.exports = function(router){
         var bookAddTpl = template.loadTemplate("book_form");
         var page = new Page("basic");
         var sequence = Promise.resolve();
+        var publisherList = [];
+
+        //Loading publisherList for form.
+        sequence = sequence.then(function(){
+            return Publisher.getList();
+        }).then(function(list){
+            publisherList = list;
+        });
+
         if(req.params.isbn){
             var book = new Book(req.params.isbn);
-            sequence = book.load();
+            sequence = sequence.then(function(){
+                return book.load();
+            });
         }
-        sequence.then(function(data){
+
+        sequence = sequence.then(function(data){
+            data = data || {};
+            data.publisherList = publisherList;
             bookAddTpl.then(function(tmpl){
                 page.setContent("body",tmpl(data)).render(res);
             }, function(err){
@@ -37,11 +52,24 @@ module.exports = function(router){
             next();
         });
     }, book.dataMiddleware, function(req,res){
-        var sequence;
+        var publisher = new Publisher(req.book_data.publisher);
+        var sequence = Promise.resolve();
+
+        sequence = sequence.then(function(){
+            return publisher.load();
+        }).then(function(data){
+                req.book_data.publisher = {
+                    _id: data._id,
+                    name: data.name
+                };
+        }).catch(function(err){
+                res.send("publisher problem");
+        });
+
         if(req.params.isbn){
-            sequence = Book.put(req.params.isbn, req.book_data);
+            sequence = sequence.then(function(){ return Book.put(req.params.isbn, req.book_data); });
         } else {
-            sequence = Book.post(req.book_data);
+            sequence = sequence.then(function(){ return Book.post(req.book_data); });
         }
         sequence.then(function(){
             res.redirect("/book/"+req.book_data.isbn);
