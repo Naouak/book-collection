@@ -52,19 +52,19 @@ module.exports = function(router){
             next();
         });
     }, book.dataMiddleware, function(req,res){
-        var publisher = new Publisher(req.book_data.publisher);
+//        var publisher = new Publisher(req.book_data.publisher);
         var sequence = Promise.resolve();
 
-        sequence = sequence.then(function(){
-            return publisher.load();
-        }).then(function(data){
-                req.book_data.publisher = {
-                    _id: data._id,
-                    name: data.name
-                };
-        }).catch(function(err){
-                res.send("publisher problem");
-        });
+//        sequence = sequence.then(function(){
+//            return publisher.load();
+//        }).then(function(data){
+//                req.book_data.publisher = {
+//                    _id: data._id,
+//                    name: data.name
+//                };
+//        }).catch(function(err){
+//                res.send("publisher problem");
+//        });
 
         if(req.params.isbn){
             sequence = sequence.then(function(){ return Book.put(req.params.isbn, req.book_data); });

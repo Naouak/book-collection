@@ -1,6 +1,7 @@
 var Promise = require("es6-promise").Promise;
 
 var database = require("../database");
+var Publisher = require("./publisher").Publisher;
 
 /**
  * Book Object
@@ -115,6 +116,32 @@ module.exports.dataMiddleware = function(req,res,next){
     book_data.status = req.param("status");
     book_data.publisher = req.param("publisher");
 
-    req.book_data = book_data;
-    next();
+    if(book_data.publisher == "0"){
+        publisher = new Publisher();
+        publisher.setName(req.param("new_publisher_name"));
+        publisher.addISBNKey(book_data.isbn.substr(5,4));
+        publisher.save().then(function(){
+            book_data.publisher = {
+                _id: publisher.getData(true)._id,
+                name: publisher.getData(true).name
+            };
+            req.book_data = book_data;
+            next();
+
+        });
+    } else {
+        publisher = new Publisher(book_data.publisher);
+        publisher.load().then(function(data){
+           book_data.publisher = {
+               _id: data._id,
+               name: data.name
+           };
+           req.book_data = book_data;
+           next();
+        });
+
+    }
+
+    //@Todo : Update books when updating publisher name
+
 };
