@@ -2,6 +2,7 @@ var Promise = require("es6-promise").Promise;
 
 var database = require("../database");
 var Publisher = require("./publisher").Publisher;
+var bookCollection = database.getCollection("books");
 
 /**
  * Book Object
@@ -20,7 +21,7 @@ var Book = module.exports.Book = function(isbn,data){
     var loadPromise;
     this.load = function(){
         loadPromise = loadPromise || new Promise(function(resolve, reject){
-            database.getCollection("books").then(function(collection){
+            bookCollection.then(function(collection){
                 collection.findOne({"isbn":isbn},function(err,result){
                     if(err){
                         reject(err);
@@ -34,6 +35,37 @@ var Book = module.exports.Book = function(isbn,data){
         return loadPromise;
     };
 
+    this.save = function(){
+        var query = undefined;
+        if(data._id){
+            query = { _id: data._id };
+        } else {
+            query = { isbn: data.isbn }
+        }
+
+        return new Promise(function (resolve, reject) {
+            bookCollection.then(function (collection) {
+                collection.findAndModify(
+                    query,
+                    null,
+                    data,
+                    {
+                        upsert: true,
+                        new: true
+                    },
+                    function (err, document) {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        data = document;
+                        resolve(data);
+                    }
+                );
+            });
+        });
+    };
+
     this.getData = function(){
         //A simple promise that will load the content if not already loaded.
         return new Promise(function(resolve, reject){
@@ -43,7 +75,12 @@ var Book = module.exports.Book = function(isbn,data){
             that.load().then(resolve(result), reject(err));
             return null;
         });
-    }
+    };
+
+    this.setPublisher = function(publisher){
+        data.publisher = publisher;
+        return this;
+    };
 };
 
 Book.get = function(isbn){
@@ -56,7 +93,7 @@ Book.put = function(isbn,book_data){
 };
 
 Book.post = function(book_data, isbn){
-   return database.getCollection("books").then(function(collection){
+   return bookCollection.then(function(collection){
         return new Promise(function(resolve, reject){
             collection.update({
                 "isbn": isbn?isbn:book_data.isbn
@@ -71,7 +108,7 @@ Book.post = function(book_data, isbn){
 };
 
 Book["delete"] = function(isbn){
-    return database.getCollection("books").then(function(collection){
+    return bookCollection.then(function(collection){
         return new Promise(function(resolve, reject){
             collection.remove({"isbn": isbn}, function(err){
                 err?reject(err):resolve();
@@ -80,12 +117,11 @@ Book["delete"] = function(isbn){
     });
 };
 
-module.exports.getBookList = function(){
-    console.log("booklist");
+module.exports.getBookList = function(find){
+    find = find || {};
     return new Promise(function(resolve, reject){
-        console.log("booklist");
         database.getCollection("books").then(function(collection){
-            collection.find().toArray(function(err, results){
+            collection.find(find).toArray(function(err, results){
                 console.log("booklist");
                 if(err){
                     reject(err);

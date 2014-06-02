@@ -4,7 +4,7 @@
 var Promise = require("es6-promise").Promise;
 
 var database = require("../database");
-
+var bookModel = require("./book");
 var publisherCollection = database.getCollection("publisher");
 
 var Publisher = module.exports.Publisher = function(_id,data){
@@ -69,7 +69,7 @@ var Publisher = module.exports.Publisher = function(_id,data){
             query = { name: data.name }
         }
 
-        return new Promise(function(resolve, reject){
+        var promise = new Promise(function(resolve, reject){
             publisherCollection.then(function(collection){
                 collection.findAndModify(
                     query,
@@ -85,11 +85,38 @@ var Publisher = module.exports.Publisher = function(_id,data){
                             return;
                         }
                         data = document;
-                        resolve();
+                        resolve(data);
                     }
                 );
             });
         });
+
+        promise.then(function(data){
+             var _id = data._id;
+            var pub = {
+                _id: data._id,
+                name: data.name
+            };
+            return bookModel.getBookList({
+               "publisher._id": _id
+            }).then(function(books){
+                var sequence = Promise.resolve();
+
+                books.forEach(function(item){
+                    sequence = sequence.then(function(){
+                        return item.setPublisher(pub).save();
+                    });
+                });
+
+                sequence = sequence.then(function(){
+                });
+
+                return sequence;
+            });
+        });
+
+
+        return promise;
     };
 };
 
