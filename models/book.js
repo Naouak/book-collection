@@ -14,74 +14,13 @@ var bookCollection = database.getCollection("books");
 //Need to add the isbn after the url to load a book.
 //var google_api_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:";
 
-var Book = module.exports.Book = function(isbn,data){
-    //A shorthand to avoid scope confusion.
-    var that = this;
-    //To avoid loading the same thing twice. Let's do a singleton.
-    var loadPromise;
-    this.load = function(){
-        loadPromise = loadPromise || new Promise(function(resolve, reject){
-            bookCollection.then(function(collection){
-                collection.findOne({"isbn":isbn},function(err,result){
-                    if(err){
-                        reject(err);
-                        return;
-                    }
-                    data = result;
-                    resolve(result);
-                });
-            },reject);
-        });
-        return loadPromise;
-    };
+var Book = module.exports.Book = require("./model")("books","isbn");
 
-    this.save = function(){
-        var query = undefined;
-        if(data._id){
-            query = { _id: data._id };
-        } else {
-            query = { isbn: data.isbn }
-        }
-
-        return new Promise(function (resolve, reject) {
-            bookCollection.then(function (collection) {
-                collection.findAndModify(
-                    query,
-                    null,
-                    data,
-                    {
-                        upsert: true,
-                        new: true
-                    },
-                    function (err, document) {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        data = document;
-                        resolve(data);
-                    }
-                );
-            });
-        });
-    };
-
-    this.getData = function(){
-        //A simple promise that will load the content if not already loaded.
-        return new Promise(function(resolve, reject){
-            if(data){
-                return resolve(data);
-            }
-            that.load().then(resolve(result), reject(err));
-            return null;
-        });
-    };
-
-    this.setPublisher = function(publisher){
-        data.publisher = publisher;
-        return this;
-    };
+Book.prototype.setPublisher = function(publisher){
+    this._data.publisher = publisher;
+    return this;
 };
+
 
 Book.get = function(isbn){
     return new Book(isbn).load();
@@ -175,9 +114,5 @@ module.exports.dataMiddleware = function(req,res,next){
            req.book_data = book_data;
            next();
         });
-
     }
-
-    //@Todo : Update books when updating publisher name
-
 };
