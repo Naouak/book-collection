@@ -61,7 +61,6 @@ module.exports.getBookList = function(find){
     return new Promise(function(resolve, reject){
         database.getCollection("books").then(function(collection){
             collection.find(find).toArray(function(err, results){
-                console.log("booklist");
                 if(err){
                     reject(err);
                     return;

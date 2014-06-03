@@ -1,4 +1,5 @@
 var database = require("./../database");
+var Promise = require("es6-promise").Promise;
 
 module.exports = function(collection_name, id_column){
     id_column = id_column || "_id";
@@ -10,24 +11,27 @@ module.exports = function(collection_name, id_column){
     };
 
     Model.prototype.load = function(cache, force){
+
         force = force || false;
         //If we have already loaded this object we may want to reuse it.
         this._loadPromise =
             (force?false:this._loadPromise)
             ||
             collectionPromise.then(function(collection){
-                return new Promise(function(resolve, reject){
-                    var query = {};
-                    query[id_column] = this._id;
-                    collection.findOne(query,function(err,result){
-                        if(err){
-                            reject(err);
-                            return;
-                        }
-                        this._data = result;
-                        resolve(result);
-                    }.bind(this));
-                }.bind(this));
+                return new Promise(
+                    function (resolve, reject) {
+                        var query = {};
+                        query[id_column] = this._id;
+                        collection.findOne(query, function (err, result) {
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+                            this._data = result;
+                            resolve(result);
+                        }.bind(this));
+                    }.bind(this)
+                );
             }.bind(this));
 
         return this._loadPromise;
@@ -74,8 +78,11 @@ module.exports = function(collection_name, id_column){
         return promise;
     };
 
-    this.getData = function(fromCache){
-        return fromCache?this._data:this.load();
+    Model.prototype.getData = function(fromCache){
+        if(fromCache){
+            return this._data;
+        }
+        return this.load();
     };
 
     return Model;
