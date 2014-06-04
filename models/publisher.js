@@ -7,117 +7,39 @@ var database = require("../database");
 var bookModel = require("./book");
 var publisherCollection = database.getCollection("publisher");
 
-var Publisher = module.exports.Publisher = function(_id,data){
-    if(_id && !(_id instanceof database.ObjectID)){
-        _id = new database.ObjectID(_id);
-    }
-    //No data given so we may initialize the data object
-    if(data == undefined){
-        data = {
-            name: null,
-            isbn:[]
-        };
-    }
+var Publisher = module.exports.Publisher = require("./model")("publisher");
 
-    //To avoid loading the same thing twice. Let's do a singleton.
-    var loadPromise;
-    this.load = function(){
-        loadPromise = loadPromise || new Promise(function(resolve, reject){
-            publisherCollection.then(function(collection){
-                collection.findOne({"_id":_id},function(err,result){
-                    if(err){
-                        reject(err);
-                        return;
-                    }
-                    data = result;
-                    resolve(result);
-                });
-            },reject);
-        });
-        return loadPromise;
+Publisher.prototype.setName = function(name){
+    this._data.name = name;
+    return this;
+};
+
+Publisher.prototype.addISBNKey = function(isbnKey){
+    this._data.isbn = this._data.isbn || [];
+    this._data.isbn.push(isbnKey);
+    this._data.isbn = data.isbn.reduce(function(arr,item){ if(arr.indexOf(item) < 0){ arr.push(item); } return arr; },[]);
+    return this;
+};
+
+Publisher.prototype._afterSave = function(data){
+    //Update of all the publishers in the books.
+    var _id = data._id;
+    var pub = {
+        _id: data._id,
+        name: data.name
     };
 
-    this.getData = function(fromCache){
-        if(fromCache){
-            return data;
-        }
-        //A shorthand to avoid scope confusion.
-        var that = this;
-        //A simple promise that will load the content if not already loaded.
-        return new Promise(function(resolve, reject){
-            that.load().then(resolve, reject);
-            return null;
-        });
-    };
-
-    this.setName = function(name){
-        data.name = name;
-        return this;
-    };
-
-    this.addISBNKey = function(isbnKey){
-        data.isbn.push(isbnKey);
-        data.isbn = data.isbn.reduce(function(arr,item){ if(arr.indexOf(item) < 0){ arr.push(item); } return arr; },[]);
-        return this;
-    };
-
-    this.save = function(){
-        var query = undefined;
-        if(_id){
-            query = { _id: _id };
-        } else {
-            query = { name: data.name }
-        }
-
-        var promise = new Promise(function(resolve, reject){
-            publisherCollection.then(function(collection){
-                collection.findAndModify(
-                    query,
-                    null,
-                    data,
-                    {
-                        upsert: true,
-                        new: true
-                    },
-                    function(err, document){
-                        if(err){
-                            reject(err);
-                            return;
-                        }
-                        data = document;
-                        resolve(data);
-                    }
-                );
+    //Can probably do it with a single mongodb query.
+    //@todo mass update of a model
+    bookModel.getBookList({
+        "publisher._id": _id
+    }).then(function(books){
+        return books.reduce(function(sequence, item){
+            return sequence.then(function(){
+                return item.setPublisher(pub).save();
             });
-        });
-
-        promise.then(function(data){
-             var _id = data._id;
-            var pub = {
-                _id: data._id,
-                name: data.name
-            };
-            return bookModel.getBookList({
-               "publisher._id": _id
-            }).then(function(books){
-                var sequence = Promise.resolve();
-
-                books.forEach(function(item){
-                    sequence = sequence.then(function(){
-                        return item.setPublisher(pub).save();
-                    });
-                });
-
-                sequence = sequence.then(function(){
-                });
-
-                return sequence;
-            });
-        });
-
-
-        return promise;
-    };
+        },Promise.resolve());
+    });
 };
 
 Publisher.getList = function(){
