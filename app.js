@@ -20,6 +20,13 @@ app.get("/", function(req, res){
     var response_send = function(data){
         booksTemplate.then(function(tmpl){
             page.setContent("body",tmpl({
+                    states: {
+                        "read": "Livres lus",
+                        "order": "Livres à commander",
+                        "queue": "Livres en attente de lecture",
+                        "reading": "Livres en cours de lecture",
+                        "rereading": "Livres en cours de relecture"
+                    },
                     books: data
             })).render(res);
         });

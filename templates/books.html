@@ -1,12 +1,13 @@
-<% for(var j in this.books){
+<%
+for(var j in this.books){
     if(this.books.hasOwnProperty(j)){
     %>
-        <h2><%=j %></h2>
+        <h2><%=this.states[j] %></h2>
         <ul class="book-list">
             <% for(var i = 0; i < this.books[j].length; i++){ %>
                 <li class="book book-status-<%=this.books[j][i].status%>"><a href="/book/<%=this.books[j][i].isbn%>">
                     <img src="/images/<%=this.books[j][i].isbn%>.png" alt="<%=this.books[j][i].title %>" class="book-cover"/>
-                    <span class="book-title"><%=this.books[j][i].isbn%> - <%=this.books[j][i].title %></span>
+                    <span class="book-title"><%=this.books[j][i].title %> <%=this.books[j][i].volume %></span>
                 </a></li>
             <% } %>
         </ul>

@@ -55,12 +55,50 @@ footer .footer-text{
     list-style: none;
     padding: 5px;
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .book{
-    display: inline-block;
+    display: block;
+    margin: 5px;
+}
+
+.book > a{
+    text-decoration: none;
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 300px;
+    overflow: hidden;
+    box-shadow: 3px 3px 1px 1px #656468;
 }
 
 .book .book-cover{
     display: block;
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+}
+
+.book .book-title{
+    padding: 5px;
+    display: block;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    background: rgba(0, 157, 223,0.8);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: black;
 }
