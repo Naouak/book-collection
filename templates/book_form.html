@@ -1,63 +1,85 @@
-<form action="/book/<%=data.isbn %>" method="post">
-    <fieldset>
-        <legend>Ajouter un livre</legend>
-        <div class="input_field">
-            <label for="book_isbn">ISBN/EAN13 :</label>
-            <input type="text" name="isbn" id="book_isbn" placeholder="0000000000000" required pattern="\d{13}" value="<%=data.isbn %>" />
-        </div>
+<div class="pure-g">
+    <div class="pure-u-1-2">
+        <form action="/book/<%=data.isbn %>" method="post" class="pure-form pure-form-aligned">
+            <fieldset>
+                <legend><%=data.isbn?"Editer":"Ajouter" %> un livre</legend>
+                <div class="input_field pure-control-group">
+                    <label for="book_isbn">ISBN/EAN13 :</label>
+                    <input type="text" name="isbn" id="book_isbn" placeholder="0000000000000" required pattern="\d{13}" value="<%=data.isbn %>" />
+                </div>
 
-        <div class="input_field">
-            <label for="book_title">Titre :</label>
-            <input type="text" name="title" id="book_title" value="<%=data.title %>"/>
-        </div>
+                <div class="input_field pure-control-group">
+                    <label for="book_title">Titre :</label>
+                    <input type="text" name="title" id="book_title" value="<%=data.title %>"/>
+                </div>
 
-        <div class="input_field">
-            <label for="book_volume">Numéro de volume :</label>
-            <input type="text" name="volume" id="book_volume" value="<%=data.volume %>" />
-        </div>
+                <div class="input_field pure-control-group">
+                    <label for="book_volume">Numéro de volume :</label>
+                    <input type="text" name="volume" id="book_volume" value="<%=data.volume %>" />
+                </div>
 
-        <div class="input_field">
-            <label for="book_publisher">Éditeur</label>
+                <div class="input_field pure-control-group">
+                    <label for="book_publisher">Éditeur&nbsp;:</label>
 
-            <select name="publisher" id="book_publisher">
-                <%
-                data.publisherList.forEach(function(item){
-                %>
-                <option value="<%=item.getData(true)._id%>"
+                    <select name="publisher" id="book_publisher">
+                        <%
+                        data.publisherList.forEach(function(item){
+                        %>
+                        <option value="<%=item.getData(true)._id%>"
                         <%=(data.publisher&&item.getData(true)._id.equals(data.publisher._id))?"selected":""%>
                         >
-                    <%=item.getData(true).name %>
-                </option>
-                <%
-                });%>
-                <option value="0">Nouvel éditeur</option>
-            </select>
+                        <%=item.getData(true).name %>
+                        </option>
+                        <%
+                        });%>
+                        <option value="0">Nouvel éditeur</option>
+                    </select>
+                </div>
+                <div class="input_field pure-control-group">
 
-            <label>Nom du nouvel éditeur : <input type="text" name="new_publisher_name" id="new_publisher_name" placeholder="Nouvel éditeur" /></label>
+                    <label for="new_publisher_name">Nouvel éditeur&nbsp;:</label> <input type="text" name="new_publisher_name" id="new_publisher_name" placeholder="Nouvel éditeur" />
 
-        </div>
+                </div>
 
-        <div class="input_field">
-            <label for="book_status">Statut de lecture :</label>
-            <select name="status" id="book_status">
-                <option value="order" <%=data.status=="order"||data.status==undefined?"selected":"" %>>A commander</option>
-                <option value="queue" <%=data.status=="queue"?"selected":"" %>>En attente de lecture</option>
-                <option value="reading" <%=data.status=="reading"?"selected":"" %>>En cours de lecture</option>
-                <option value="read" <%=data.status=="read"?"selected":"" %>>Lu</option>
-                <option value="rereading" <%=data.status=="rereading"?"selected":"" %>>En cours de relecture</option>
-            </select>
-        </div>
+                <div class="input_field pure-control-group">
+                    <label for="book_status">Statut de lecture :</label>
+                    <select name="status" id="book_status">
+                        <option value="order" <%=data.status=="order"||data.status==undefined?"selected":"" %>>A commander</option>
+                        <option value="queue" <%=data.status=="queue"?"selected":"" %>>En attente de lecture</option>
+                        <option value="reading" <%=data.status=="reading"?"selected":"" %>>En cours de lecture</option>
+                        <option value="read" <%=data.status=="read"?"selected":"" %>>Lu</option>
+                        <option value="rereading" <%=data.status=="rereading"?"selected":"" %>>En cours de relecture</option>
+                    </select>
+                </div>
 
-        <button><%=data.isbn?'Mettre à jour':'Ajouter' %></button>
-    </fieldset>
-</form>
+                <div class="pure-controls">
+                    <button class="pure-button pure-button-primary"><%=data.isbn?'Mettre à jour':'Ajouter' %></button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="pure-u-1-2">
+        <% if(data.isbn){ %>
+        <form action="/book/<%=data.isbn%>/image/" method="post" enctype="multipart/form-data" class="pure-form pure-form-aligned">
+            <fieldset>
+                <legend>Couverture</legend>
+                <div class="pure-controls">
+                    <img src="/images/<%=data.isbn%>.png" alt="Visuel actuel"/>
+                </div>
+                <div class="pure-control-group">
+                    <label for="cover">Choisir une nouvelle couverture&nbsp;:</label>
+                    <input type="file" name="cover" id="cover"/>
+                </div>
+                <div class="pure-controls">
+                    <button class="pure-button pure-button-primary">Uploader</button>
+                </div>
+            </fieldset>
+
+        </form>
+        <% } %>
+    </div>
+</div>
 
 
 
-<% if(data.isbn){ %>
-<form action="/book/<%=data.isbn%>/image/" method="post" enctype="multipart/form-data">
-    <img src="/images/<%=data.isbn%>.png" alt="Visuel actuel"/>
-    <input type="file" name="cover" id="cover"/>
-    <button>Uploader</button>
-</form>
-<% } %>
+
