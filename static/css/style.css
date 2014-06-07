@@ -102,3 +102,13 @@ footer .footer-text{
     right: 0;
     color: black;
 }
+
+.publisher-list{
+    list-style: none;
+}
+
+.publisher-list a{
+    text-decoration: none;
+    font-weight: bold;
+
+}
