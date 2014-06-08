@@ -74,6 +74,16 @@
                     <button class="pure-button pure-button-primary">Uploader</button>
                 </div>
             </fieldset>
+            <fieldset>
+                <legend>Où trouver la couverture ?</legend>
+
+                <div>
+                    <a class="pure-button pure-button-primary" target="_blank"
+                       href="http://recherche.fnac.com/SearchResult/ResultList.aspx?SCat=0%211&Search=<%=data.isbn%>&sft=1&sa=0&submitbtn=OK">Chercher sur Fnac.com</a>
+                    <a class="pure-button pure-button-primary" target="_blank"
+                       href="http://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords=<%=data.isbn%>">Chercher sur Amazon.fr</a>
+                </div>
+            </fieldset>
 
         </form>
         <% } %>
