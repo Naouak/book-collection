@@ -59,7 +59,7 @@ Book["delete"] = function(isbn){
 module.exports.getBookList = function(find){
     find = find || {};
     return new Promise(function(resolve, reject){
-        database.getCollection("books").then(function(collection){
+        bookCollection.then(function(collection){
             collection.find(find).toArray(function(err, results){
                 if(err){
                     reject(err);
