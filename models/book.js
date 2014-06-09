@@ -21,6 +21,11 @@ Book.prototype.setPublisher = function(publisher){
     return this;
 };
 
+Book.prototype.setSerie = function(serie){
+    this._data.serie = serie;
+    return this;
+};
+
 
 Book.get = function(isbn){
     return new Book(isbn).load();
