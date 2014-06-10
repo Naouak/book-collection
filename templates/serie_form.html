@@ -1,0 +1,16 @@
+<form action="/serie/<%=data._id%>" method="post" class="pure-form pure-form-aligned">
+    <fieldset>
+        <legend>Ajouter une série</legend>
+
+        <div class="input_field pure-control-group">
+            <label for="serie_title">Titre :</label>
+            <input type="text" name="title" id="serie_title" value="<%=data.title %>"/>
+        </div>
+
+        <div class="pure-controls">
+            <button>Enregistrer</button>
+        </div>
+
+    </fieldset>
+
+</form>

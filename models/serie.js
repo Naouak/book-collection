@@ -15,3 +15,7 @@ Serie.prototype._afterSave = function(data){
 
     return data;
 };
+
+Serie.dataMiddleware = function(req,res,next){
+    next();
+};
